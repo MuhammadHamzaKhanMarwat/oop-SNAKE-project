@@ -1,9 +1,19 @@
 #include<iostream>
 #include<SFML/Graphics.hpp>
 using namespace sf;
+//Dimentions
+int l = 800; // lenght
+int w = 600; // width
 int main()
 {
-	RenderWindow window(VideoMode(100, 100), "Snake");
+	//Textures
+	Texture t_snake, t_platform;
+	t_snake.loadFromFile("image/red.png");
+	t_platform.loadFromFile("image/green.png");
+
+	//Sprite
+	Sprite s_snake, s_platform;
+	RenderWindow window(VideoMode(l,w), "Snake");
 	while (window.isOpen())
 	{
 		Event E;
