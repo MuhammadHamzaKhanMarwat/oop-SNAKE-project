@@ -8,9 +8,8 @@ int l = N*size; // lenght
 int w = M*size; // width
 
 int dir, num = 4;
-class Snake
+struct Snake
 {
-public:
 	int x, y;
 };
 Snake s[100];
@@ -22,20 +21,22 @@ void tick()
 		s[i].x = s[i - 1].x;
 		s[i].y = s[i - 1].y;
 	}
-	switch (dir)
-	{
-	case 0:
-		s[0].y += 1;
-	case 1:
-		s[0].x -= 1;
-	case 2:
-		s[0].x += 1;
-	case 3:
-		s[0].y -= 1;
 	
-	default:
-		//Empty
-		break;
+	if (dir == 0)
+	{
+		s[0].y += 1;
+	}
+	if (dir == 2)
+	{
+		s[0].x -= 1;
+	}
+	if (dir == 3)
+	{
+		s[0].x += 1;
+	}
+	if (dir == 4)
+	{
+		s[0].y -= 1;
 	}
 }
 int main()
@@ -56,7 +57,7 @@ int main()
 
 	while (window.isOpen())
 	{
-		float time = clock.getElapsedTime().asSeconds;
+		float time = clock.getElapsedTime().asSeconds();
 		timer += time;
 
 		Event E;
@@ -84,6 +85,12 @@ int main()
 				window.draw(s_platform);
 			}
 		}
+		for (int i = 0; i < num; i++)
+		{
+			s_snake.setPosition(s[i].x * size, s[i].y * size);
+			window.draw(s_snake);
+		}
+
 		window.display();
 	}
 	return 0;
