@@ -89,16 +89,18 @@ int main()
 
     //Textures.
 
-    Texture t_platform, t_snake,t_fruit ;
+    Texture t_platform, t_snake,t_fruit,t_border ;
     t_platform.loadFromFile("image/green.png");
     t_snake.loadFromFile("image/red.png");
     t_fruit.loadFromFile("image/white.png");
+    t_border.loadFromFile("image/border.png");
 
     //Sprites.
 
     Sprite s_platform(t_platform);
     Sprite s_snake(t_snake);
     Sprite s_fruit(t_fruit);
+    Sprite s_border(t_border);
     
     f.x = 10;
     f.y = 10;
@@ -167,10 +169,25 @@ int main()
 
         // drawing the platform
         for (int i = 0; i < N; i++)
+        {
             for (int j = 0; j < M; j++)
             {
                 s_platform.setPosition(i * size, j * size);  window.draw(s_platform);
             }
+        }
+        //drawing borders
+        for (int i = 0; i < N; i++) 
+        {
+            for (int j = 0; j < M; j++) 
+            {
+                if (i == 0 || i == N - 1 || j == 0 || j == M - 1) 
+                {
+                    s_border.setPosition(i * size, j * size);
+                    window.draw(s_border);
+                }
+                
+            }
+        }
         // drawing the Snake
         for (int i = 0; i < num; i++)
         {
