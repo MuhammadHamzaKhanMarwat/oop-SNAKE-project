@@ -4,32 +4,66 @@
 #include <iostream>
 using namespace sf;
 
-int N = 30, M = 20; // dimensions for the window
-int ndash = 28, mDash = 16;
-int size = 16; // the pixel size for the images 
-
-int w = size * N; // width8
-int h = size * M; // hieght
-
-int dir; //for Directions
-int num = 4; // number of direction (left , right etc.)
-
+int N = 30, M = 20;				// dimensions for the window
+int Ndash = 26, Mdash = 14;
+int size = 16;					// the pixel size for the images 
+int w = size * N;				// width
+int h = size * M;				// hieght
+int dir;						//for Directions
+int num = 4;					// number of direction (left , right etc.)
 float borderTime = 30;			//Time after which boundaries close
 
-class Snake
+class Axis
 {
 public:
-	int x, y;
+	int x;
+	int y;
 };
+
+class Song 
+{
+public:
+	Music theme_song;
+
+	Song() 
+	{
+		theme_song.openFromFile("song/BGM_02.wav");
+		theme_song.setVolume(30);
+		theme_song.play();
+		theme_song.setLoop(true);
+	}
+};
+class Textures 
+{
+public:
+	Texture t_platform, t_snake, t_fruit, t_border, tt_border;
+
+	Textures() {
+		t_platform.loadFromFile("image/green.png");
+		t_snake.loadFromFile("image/red.png");
+		t_fruit.loadFromFile("image/white.png");
+		t_border.loadFromFile("image/border.png");
+		tt_border.loadFromFile("image/border2.png");
+	}
+};
+class Sprites 
+{
+public:
+	Sprite s_platform, s_snake, s_fruit, s_border, ss_border;
+
+	Sprites(Textures& textures) {
+		s_platform.setTexture(textures.t_platform);
+		s_snake.setTexture(textures.t_snake);
+		s_fruit.setTexture(textures.t_fruit);
+		s_border.setTexture(textures.t_border);
+		ss_border.setTexture(textures.tt_border);
+	}
+};
+
+class Snake : public Axis{};
+class Fruit : public Axis{};
 
 Snake s[100];
-
-class Fruit
-{
-public:
-	int x, y;
-};
-
 Fruit f;
 
 void Tick()
@@ -49,8 +83,8 @@ void Tick()
 	if ((s[0].x == f.x) && (s[0].y == f.y))
 	{
 		num++;
-		f.x = rand() % ndash;
-		f.y = rand() % mDash;
+		f.x = rand() % Ndash;
+		f.y = rand() % Mdash;
 	}
 
 	// for errors (if the snake touches it tail / if it directly goes to left or right the snake)
@@ -86,33 +120,13 @@ int main()
 	srand(time(0)); // initailizing random number generator
 
 	RenderWindow window(VideoMode(w, h), "Snake Game!");
+	Song theme_song;
+	Textures textures;
+	Sprites sprites(textures);
 
-	//Song 
-	Music theme_song;
-	theme_song.openFromFile("song/BGM_02.wav");
-	theme_song.setVolume(30);
-	theme_song.play();
-	theme_song.setLoop(true);
-
-	//Textures.
-
-	Texture t_platform, t_snake, t_fruit, t_border, tt_border;
-	t_platform.loadFromFile("image/green.png");
-	t_snake.loadFromFile("image/red.png");
-	t_fruit.loadFromFile("image/white.png");
-	t_border.loadFromFile("image/border.png");
-	tt_border.loadFromFile("image/border2.png");
-
-	//Sprites.
-
-	Sprite s_platform(t_platform);
-	Sprite s_snake(t_snake);
-	Sprite s_fruit(t_fruit);
-	Sprite s_border(t_border);
-	Sprite ss_border(tt_border);
-
-	f.x = 10;
-	f.y = 10;
+	
+	f.x = 8;
+	f.y = 8;
 
 	Clock clock;
 	float timer = 0, delay = 0.1;
@@ -181,8 +195,8 @@ int main()
 		{
 			for (int j = 0; j < M; j++)
 			{
-				s_platform.setPosition(i * size, j * size);
-				window.draw(s_platform);
+				sprites.s_platform.setPosition(i * size, j * size);
+				window.draw(sprites.s_platform);
 			}
 		}
 		//drawing borders before colliders
@@ -192,8 +206,8 @@ int main()
 			{
 				if (i == 0 || i == N - 1 || j == 0 || j == M - 1)
 				{
-					s_border.setPosition(i * size, j * size);
-					window.draw(s_border);
+					sprites.s_border.setPosition(i * size, j * size);
+					window.draw(sprites.s_border);
 				}
 
 			}
@@ -206,14 +220,12 @@ int main()
 			{
 				if (i == 0 || i == N - 1 || j == 0 || j == M - 1)
 				{
-					s_border.setPosition(i * size, j * size);
-					window.draw(ss_border);
+					sprites.s_border.setPosition(i * size, j * size);
+					window.draw(sprites.s_border);
 				}
 
 			}
 		}
-
-
 
 		//snake collisions
 		if (s[0].x == 0 || s[0].x == N - 1 || s[0].y == 0 || s[0].y == M - 1)
@@ -231,12 +243,13 @@ int main()
 		// drawing the Snake
 		for (int i = 0; i < num; i++)
 		{
-			s_snake.setPosition(s[i].x * size, s[i].y * size);
-			window.draw(s_snake);
+			sprites.s_snake.setPosition(s[i].x * size, s[i].y * size);
+			window.draw(sprites.s_snake);
 		}
+
 		// drawing the fruit.
-		s_fruit.setPosition(f.x * size , f.y * size);
-		window.draw(s_fruit);
+		sprites.s_fruit.setPosition(f.x * size , f.y * size);
+		window.draw(sprites.s_fruit);
 
 		window.display();
 	}
