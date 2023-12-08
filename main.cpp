@@ -5,13 +5,13 @@
 using namespace sf;
 
 int N = 30, M = 20;				// dimensions for the window
-int Ndash = 26, Mdash = 14;
+int Ndash = 26, Mdash = 14;		// taking different mesurements for fruit so that it dont print it on the border
 int size = 16;					// the pixel size for the images 
 int w = size * N;				// width
 int h = size * M;				// hieght
-int dir;						//for Directions
+int dir;						// for Directions
 int num = 4;					// number of direction (left , right etc.)
-float borderTime = 30;			//Time after which boundaries close
+float borderTime = 30;			// Time after which boundaries close	
 
 class Axis
 {
@@ -83,8 +83,8 @@ void Tick()
 	if ((s[0].x == f.x) && (s[0].y == f.y))
 	{
 		num++;
-		f.x = rand() % Ndash;
-		f.y = rand() % Mdash;
+		f.x = 1 + rand() % (2-Ndash);
+		f.y = 1 + rand() % (2-Mdash);
 	}
 
 	// for errors (if the snake touches it tail / if it directly goes to left or right the snake)
@@ -114,6 +114,19 @@ void Tick()
 	borderTime -= 1;
 	std::cout << borderTime << std::endl;
 }
+void ResetSnake() 
+{
+	// Reset snake position to the center
+	num = 4;
+	dir = 0;
+	s[0].x = N / 2;
+	s[0].y = M / 2;
+	for (int i = 1; i < num; ++i) {
+		s[i].x = s[0].x - i;
+		s[i].y = s[0].y;
+	}
+}
+
 
 int main()
 {
@@ -130,6 +143,7 @@ int main()
 
 	Clock clock;
 	float timer = 0, delay = 0.1;
+	bool game_over = false;
 
 
 	while (window.isOpen())
@@ -180,6 +194,11 @@ int main()
 		{
 			dir = 0;
 		}
+		// When press ESC Key the user can exit the game
+		if (Keyboard::isKeyPressed(Keyboard::Escape)) 
+		{
+			window.close();
+		}
 
 
 		if (timer > delay)
@@ -226,21 +245,27 @@ int main()
 
 			}
 		}
-
-		//snake collisions
-		if (s[0].x == 0 || s[0].x == N - 1 || s[0].y == 0 || s[0].y == M - 1)
-		{
-			//DIE
-			if (borderTime < 0)
-			{
-				
-				exit(0);
+		for (int i = 1; i < num; ++i) {
+			if (s[0].x == s[i].x && s[0].y == s[i].y) {
+				game_over = true;
+				break;
 			}
-
-			
 		}
 
-		// drawing the Snake
+		// Snake collisions with border
+		if (s[0].x == 0 || s[0].x == N - 1 || s[0].y == 0 || s[0].y == M - 1) 
+		{
+			if (borderTime < 0) 
+			{
+				game_over = true;
+			}
+		}
+
+		if (game_over) 
+		{
+			ResetSnake();
+			game_over = false;
+		}
 		for (int i = 0; i < num; i++)
 		{
 			sprites.s_snake.setPosition(s[i].x * size, s[i].y * size);
