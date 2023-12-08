@@ -1,16 +1,20 @@
 #include <SFML/Graphics.hpp>
 #include<SFML/Audio.hpp>
 #include <time.h>
+#include <iostream>
 using namespace sf;
 
-int N = 30, M = 20; // dimentions for the window
+int N = 30, M = 20; // dimensions for the window
+int ndash = 28, mDash = 16;
 int size = 16; // the pixel size for the images 
 
-int w = size * N; // width
+int w = size * N; // width8
 int h = size * M; // hieght
 
 int dir; //for Directions
 int num = 4; // number of direction (left , right etc.)
+
+float borderTime = 30;			//Time after which boundaries close
 
 class Snake
 {
@@ -41,12 +45,12 @@ void Tick()
 	if (dir == 2) s[0].x += 1;
 	if (dir == 3) s[0].y -= 1;
 
-	// randomly printing / chaging the fruit's location.
+	// randomly printing / changing the fruit's location.
 	if ((s[0].x == f.x) && (s[0].y == f.y))
 	{
 		num++;
-		f.x = rand() % N;
-		f.y = rand() % M;
+		f.x = rand() % ndash;
+		f.y = rand() % mDash;
 	}
 
 	// for errors (if the snake touches it tail / if it directly goes to left or right the snake)
@@ -72,6 +76,9 @@ void Tick()
 		{
 			num = i;
 		}
+
+	borderTime -= 1;
+	std::cout << borderTime << std::endl;
 }
 
 int main()
@@ -89,11 +96,12 @@ int main()
 
 	//Textures.
 
-	Texture t_platform, t_snake, t_fruit, t_border;
+	Texture t_platform, t_snake, t_fruit, t_border, tt_border;
 	t_platform.loadFromFile("image/green.png");
 	t_snake.loadFromFile("image/red.png");
 	t_fruit.loadFromFile("image/white.png");
 	t_border.loadFromFile("image/border.png");
+	tt_border.loadFromFile("image/border2.png");
 
 	//Sprites.
 
@@ -101,6 +109,7 @@ int main()
 	Sprite s_snake(t_snake);
 	Sprite s_fruit(t_fruit);
 	Sprite s_border(t_border);
+	Sprite ss_border(tt_border);
 
 	f.x = 10;
 	f.y = 10;
@@ -176,7 +185,7 @@ int main()
 				window.draw(s_platform);
 			}
 		}
-		//drawing borders
+		//drawing borders before colliders
 		for (int i = 0; i < N; i++)
 		{
 			for (int j = 0; j < M; j++)
@@ -189,6 +198,36 @@ int main()
 
 			}
 		}
+
+		//drawing borders after colliders
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < M; j++)
+			{
+				if (i == 0 || i == N - 1 || j == 0 || j == M - 1)
+				{
+					s_border.setPosition(i * size, j * size);
+					window.draw(ss_border);
+				}
+
+			}
+		}
+
+
+
+		//snake collisions
+		if (s[0].x == 0 || s[0].x == N - 1 || s[0].y == 0 || s[0].y == M - 1)
+		{
+			//DIE
+			if (borderTime < 0)
+			{
+				
+				exit(0);
+			}
+
+			
+		}
+
 		// drawing the Snake
 		for (int i = 0; i < num; i++)
 		{
@@ -196,7 +235,7 @@ int main()
 			window.draw(s_snake);
 		}
 		// drawing the fruit.
-		s_fruit.setPosition(f.x * size, f.y * size);
+		s_fruit.setPosition(f.x * size , f.y * size);
 		window.draw(s_fruit);
 
 		window.display();
