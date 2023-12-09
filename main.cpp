@@ -13,7 +13,7 @@ int dir;						// for Directions
 int num = 4;					// number of direction (left , right etc.)
 float borderTime = 30;			// Time after which boundaries close	
 
-class Axis
+class Coordinates
 {
 public:
 	int x;
@@ -60,11 +60,14 @@ public:
 	}
 };
 
-class Snake : public Axis{};
-class Fruit : public Axis{};
+class Snake : public Coordinates {};
+class Fruit : public Coordinates {};
 
 Snake s[100];
 Fruit f;
+Song theme_song;
+Textures textures;
+Sprites sprites(textures);
 
 void Tick()
 {
@@ -133,9 +136,7 @@ int main()
 	srand(time(0)); // initailizing random number generator
 
 	RenderWindow window(VideoMode(w, h), "Snake Game!");
-	Song theme_song;
-	Textures textures;
-	Sprites sprites(textures);
+	
 
 	
 	f.x = 8;
