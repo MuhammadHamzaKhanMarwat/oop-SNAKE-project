@@ -4,6 +4,8 @@
 #include <iostream>
 using namespace sf;
 
+// VARIABLE DECLEARATION
+
 int N = 30, M = 20;				// dimensions for the window
 int Ndash = 26, Mdash = 14;		// taking different mesurements for fruit so that it dont print it on the border
 int size = 16;					// the pixel size for the images 
@@ -11,8 +13,9 @@ int w = size * N;				// width
 int h = size * M;				// hieght
 int dir;						// for Directions
 int num = 4;					// number of direction (left , right etc.)
-float borderTime = 30;			// Time after which boundaries close	
+float borderTime = 5;			// Time after which boundaries close	
 
+// stores the main coordinates for the game (X Axis and Y Axis)
 class Coordinates
 {
 public:
@@ -20,11 +23,12 @@ public:
 	int y;
 };
 
+//stores and sort the theme song for the game 
 class Song 
 {
 public:
 	Music theme_song;
-
+	// plays the theme song on repeat as long as the game is running
 	Song() 
 	{
 		theme_song.openFromFile("song/BGM_02.wav");
@@ -33,11 +37,13 @@ public:
 		theme_song.setLoop(true);
 	}
 };
+
+// used the enviroments texture
 class Textures 
 {
 public:
 	Texture t_platform, t_snake, t_fruit, t_border, tt_border;
-
+	//store the textures of the game
 	Textures() {
 		t_platform.loadFromFile("image/green.png");
 		t_snake.loadFromFile("image/red.png");
@@ -46,11 +52,12 @@ public:
 		tt_border.loadFromFile("image/border2.png");
 	}
 };
+
 class Sprites 
 {
 public:
 	Sprite s_platform, s_snake, s_fruit, s_border, ss_border;
-
+	//it takes the textures and spread it around the screen
 	Sprites(Textures& textures) {
 		s_platform.setTexture(textures.t_platform);
 		s_snake.setTexture(textures.t_snake);
@@ -61,7 +68,10 @@ public:
 };
 
 class Snake : public Coordinates {};
+
 class Fruit : public Coordinates {};
+
+//DECLEARING OBJECTS
 
 Snake s[100];
 Fruit f;
@@ -69,7 +79,7 @@ Song theme_song;
 Textures textures;
 Sprites sprites(textures);
 
-void Tick()
+static void Tick()
 {
 	// for moving the snakes head
 	for (int i = num; i > 0; --i)
@@ -113,18 +123,19 @@ void Tick()
 		{
 			num = i;
 		}
-
+	// time countdown starts
 	borderTime -= 1;
 	std::cout << borderTime << std::endl;
 }
-void ResetSnake() 
+// Reset snake position to the center
+static void ResetSnake() 
 {
-	// Reset snake position to the center
 	num = 4;
 	dir = 0;
 	s[0].x = N / 2;
 	s[0].y = M / 2;
-	for (int i = 1; i < num; ++i) {
+	for (int i = 1; i < num; ++i) 
+	{
 		s[i].x = s[0].x - i;
 		s[i].y = s[0].y;
 	}
@@ -136,8 +147,6 @@ int main()
 	srand(time(0)); // initailizing random number generator
 
 	RenderWindow window(VideoMode(w, h), "Snake Game!");
-	
-
 	
 	f.x = 8;
 	f.y = 8;
@@ -233,7 +242,7 @@ int main()
 			}
 		}
 
-		//drawing borders after colliders
+		//drawing borders after colliders(snake Spawns first in 00 position so with the help of this it can spawn first in the center)
 		for (int i = 0; i < N; i++)
 		{
 			for (int j = 0; j < M; j++)
@@ -253,6 +262,7 @@ int main()
 			}
 		}
 
+
 		// Snake collisions with border
 		if (s[0].x == 0 || s[0].x == N - 1 || s[0].y == 0 || s[0].y == M - 1) 
 		{
@@ -267,6 +277,8 @@ int main()
 			ResetSnake();
 			game_over = false;
 		}
+		
+		// Drawing snake 
 		for (int i = 0; i < num; i++)
 		{
 			sprites.s_snake.setPosition(s[i].x * size, s[i].y * size);
