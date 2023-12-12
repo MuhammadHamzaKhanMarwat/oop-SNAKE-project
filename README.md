@@ -34,7 +34,7 @@ Running the Game
 bash
 Copy code
 # Clone the repository
-git clone <repository_url>
+git clone (https://github.com/MuhammadHamzaKhanMarwat/oop-SNAKE-project.git)
 
 # Compile the code (example using g++)
 g++ -o SnakeGame main.cpp -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
