@@ -1,44 +1,44 @@
-Certainly! Here's a sample README file for your GitHub project:
+Snake Game using SFML
+This project is an implementation of the classic Snake game using SFML, a multimedia library for C++. It offers a unique gameplay mechanic where the snake dynamically changes size upon conflicting directional inputs and restarts upon collision with borders.
 
----
+Gameplay Features
+Directional Conflicts: If the player inputs a conflicting direction while the snake is moving (e.g., left then right), the snake decreases in size.
+Border Collision: The game restarts if the snake collides with the borders of the game window.
+Endless Gameplay: The game doesn't have a finite endpoint, providing an endless playing experience.
+Requirements
+Ensure you have the following installed to run the game:
 
-# Snake Game using SFML Library
+SFML library
+C++ compiler
+How to Run
+Clone the repository to your local machine.
+Install SFML and configure it properly.
+Compile the source code using your preferred C++ compiler, linking the SFML libraries.
+Run the compiled executable file.
+Controls
+Arrow Keys: Control the snake's direction.
+WASD Keys: Alternative control scheme for direction.
+ESC Key: Exit the game.
+Game Logic Overview
+The project consists of several classes:
 
-This project is an implementation of the classic Snake game developed using the SFML (Simple and Fast Multimedia Library). It was created between November and December 2023, offering a unique twist to the traditional Snake game mechanics.
+Coordinates: Stores X and Y coordinates for game entities.
+Song: Handles the game's theme song playback.
+Textures: Manages the textures used in the game.
+Sprites: Renders the textures onto the game window.
+Snake: Inherits from Coordinates, representing the snake entity.
+Fruit: Inherits from Coordinates, representing the fruit the snake consumes.
+The main() function initializes the game window and handles user input, updating the game state accordingly.
 
-## Project Overview
+Running the Game
+bash
+Copy code
+# Clone the repository
+git clone <repository_url>
 
-The game operates on a modified Snake concept where the snake dynamically decreases in size if the player inputs a conflicting direction while the snake is already moving in a specific direction. For instance, if the snake is heading left and the player presses right immediately (Instead of pressing up and then right normally), the snake's size reduces and vice versa. This mechanic adds an extra layer of challenge to the gameplay.
+# Compile the code (example using g++)
+g++ -o SnakeGame main.cpp -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
-Additionally, plus it was my first game so it was hard to understand the machanics at first and will improve in future, the game restarts automatically upon collision with the borders, making it an endless gameplay experience. The only way to exit the game is by pressing the designated exit button.
----
-## Classes Implemented
-
-1. **Texture**: Handles loading and managing textures for game elements.
-2. **Sprite**: Manages the sprites used in the game, such as the snake and food items.
-3. **Coordinates**: stores and keep track of the coordinates (X Axis & Y Axis). 
-4. 4. **Snake**: Assign the coordinates for the snake.
-5. **Fruit**: Assign the coordinates for the snake.
----
-## Requirements
-
-This project utilizes SFML, a powerful but older multimedia library. Ensure you have the necessary SFML libraries installed to run the game successfully.
----
-## How to Run
-
-To run the game, follow these steps:
-
-1. Clone the repository to your local machine.
-2. Ensure you have SFML installed and properly configured.
-3. Compile the project using your preferred compiler, linking the SFML libraries.
-4. Run the compiled executable file.
----
-## Controls
-
-- Use the arrow keys or WASD to control the snake's direction.
-- Press the designated exit key (ESC) to close the game.
----
-## Contributors
-
-This project was created by *Muhammad Hamza Khan* as a part of *OOP Semester Project*. Contributions and improvements are welcome via pull requests.
-
+# Run the executable
+./SnakeGame
+Feel free to modify and enhance the game logic or add features as needed!
