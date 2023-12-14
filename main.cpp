@@ -14,6 +14,7 @@ int h = size * M;				// hieght
 int dir;						// for Directions
 int num = 4;					// number of direction (left , right etc.)
 float borderTime = 5;			// Time after which boundaries close	
+int score = 0;
 
 // stores the main coordinates for the game (X Axis and Y Axis)
 class Coordinates
@@ -35,6 +36,15 @@ public:
 		theme_song.setVolume(30);
 		theme_song.play();
 		theme_song.setLoop(true);
+	}
+	void Play_misic()
+	{
+		theme_song.play();
+		theme_song.setLoop(true);
+	}
+	void Stop_music()
+	{
+		theme_song.stop();
 	}
 };
 
@@ -127,6 +137,9 @@ static void Tick()
 	borderTime -= 1;
 	std::cout << borderTime << std::endl;
 }
+
+
+
 // Reset snake position to the center
 static void ResetSnake() 
 {
@@ -142,15 +155,89 @@ static void ResetSnake()
 }
 
 
+
+// this draws the menu
+
+void DrawMenu(RenderWindow& window) 
+{
+	theme_song.Stop_music();
+	Font font;
+	Texture menu;
+	Sprite m_menu;
+	menu.loadFromFile("image/Snake.jpg");
+	m_menu.setTexture(menu);
+	font.loadFromFile("font/Jockable.ttf");
+
+	Text title("Snake Game", font, 60);
+	title.setFillColor(Color::Green);
+	title.setOutlineThickness(2);
+	title.setOutlineColor(Color::Black);
+	title.setPosition(60, 40);
+
+	Text play("Play", font, 15);
+	play.setStyle(Text::Style::Bold);
+	play.setFillColor(Color::Green);
+	play.setOutlineThickness(3);
+	play.setOutlineColor(Color::Black);
+	play.setPosition(220, 140);
+
+	Text exit("Exit", font, 15);
+	exit.setStyle(Text::Style::Bold);
+	exit.setFillColor(Color::Green);
+	exit.setOutlineThickness(3);
+	exit.setOutlineColor(Color::Black);
+	exit.setPosition(220, 170);
+
+	while (window.isOpen()) 
+	{
+		window.clear();
+
+		Event e;
+		while (window.pollEvent(e)) 
+		{
+			if (e.type == Event::Closed)
+				window.close();
+
+			if (e.type == Event::MouseButtonPressed) 
+			{
+				if (e.key.code == Mouse::Button::Left) 
+				{
+					if (play.getGlobalBounds().contains(Mouse::getPosition(window).x, Mouse::getPosition(window).y)) 
+					{
+						
+						theme_song.Play_misic();
+						ResetSnake();
+						score = 0;
+						return;
+					}
+					else if (exit.getGlobalBounds().contains(Mouse::getPosition(window).x, Mouse::getPosition(window).y)) 
+					{
+						window.close();
+					}
+				}
+			}
+		}
+
+		window.draw(m_menu);
+		window.draw(title);
+		window.draw(play);
+		window.draw(exit);
+		window.display();
+	}
+}
+
+
 int main()
 {
+
+
 	srand(time(0)); // initailizing random number generator
 
 	RenderWindow window(VideoMode(w, h), "Snake Game!");
 	
 	f.x = 8;
 	f.y = 8;
-
+	DrawMenu(window);
 	Clock clock;
 	float timer = 0, delay = 0.1;
 	bool game_over = false;
@@ -169,6 +256,7 @@ int main()
 				window.close();
 		}
 
+
 		// keyboard input for arrow keys. 
 		if (Keyboard::isKeyPressed(Keyboard::Left))
 		{
@@ -186,7 +274,6 @@ int main()
 		{
 			dir = 0;
 		}
-
 		// keyboard input for WASD.
 		if (Keyboard::isKeyPressed(Keyboard::A))
 		{
@@ -216,8 +303,8 @@ int main()
 			timer = 0;
 			Tick();
 		}
-
 		window.clear();
+
 
 		// drawing the platform
 		for (int i = 0; i < N; i++)
@@ -228,6 +315,8 @@ int main()
 				window.draw(sprites.s_platform);
 			}
 		}
+
+
 		//drawing borders before colliders
 		for (int i = 0; i < N; i++)
 		{
@@ -242,6 +331,7 @@ int main()
 			}
 		}
 
+
 		//drawing borders after colliders(snake Spawns first in 00 position so with the help of this it can spawn first in the center)
 		for (int i = 0; i < N; i++)
 		{
@@ -255,6 +345,8 @@ int main()
 
 			}
 		}
+
+
 		for (int i = 1; i < num; ++i) {
 			if (s[0].x == s[i].x && s[0].y == s[i].y) {
 				game_over = true;
@@ -272,6 +364,19 @@ int main()
 			}
 		}
 
+
+		// Drawing and setting up the score system
+		score = num - 4;
+		Font font;
+		font.loadFromFile("font/We Love Peace.ttf");
+		Text scoreText("Score: " + std::to_string(score), font, 20);
+		scoreText.setFillColor(Color::White);
+		scoreText.setOutlineThickness(2);
+		scoreText.setOutlineColor(Color::Black);
+		scoreText.Bold;
+		scoreText.setPosition(10, 300);
+		window.draw(scoreText);
+
 		if (game_over) 
 		{
 			ResetSnake();
@@ -288,7 +393,6 @@ int main()
 		// drawing the fruit.
 		sprites.s_fruit.setPosition(f.x * size , f.y * size);
 		window.draw(sprites.s_fruit);
-
 		window.display();
 	}
 
